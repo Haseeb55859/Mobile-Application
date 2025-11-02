@@ -1,155 +1,160 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(FormApp());
+  runApp(Week10AdvancedApp());
 }
 
-class FormApp extends StatelessWidget {
+class Week10AdvancedApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Week 6 – Common Widgets (Form)',
+      title: 'Week 10 - Scrolling Lists & Effects',
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: Color(0xFF0F1C1F),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: Colors.white10,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.tealAccent, width: 2),
-          ),
-          labelStyle: TextStyle(color: Colors.white70),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.teal,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-            textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.deepPurple,
+          centerTitle: true,
+          elevation: 4,
+          titleTextStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            color: Colors.white,
+            letterSpacing: 1.2,
           ),
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: FormScreen(),
+      home: const ScrollDemoScreen(),
     );
   }
 }
 
-class FormScreen extends StatefulWidget {
+class ScrollDemoScreen extends StatefulWidget {
+  const ScrollDemoScreen({super.key});
+
   @override
-  State<FormScreen> createState() => _FormScreenState();
+  State<ScrollDemoScreen> createState() => _ScrollDemoScreenState();
 }
 
-class _FormScreenState extends State<FormScreen> {
-  final _formKey = GlobalKey<FormState>();
-  String userName = '';
-  String email = '';
+class _ScrollDemoScreenState extends State<ScrollDemoScreen> {
+  final List<String> fruits = [
+    "Apple", "Banana", "Mango", "Orange", "Grapes",
+    "Pineapple", "Watermelon", "Papaya", "Kiwi", "Strawberry"
+  ];
+
+  final List<String> vegetables = [
+    "Carrot", "Potato", "Tomato", "Onion", "Cabbage",
+    "Peas", "Broccoli", "Spinach", "Cauliflower", "Corn"
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "User Form",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.teal,
-        elevation: 3,
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(20),
-          child: Card(
-            color: Colors.black26,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+      body: CustomScrollView(
+        slivers: [
+          // AppBar inside CustomScrollView
+          SliverAppBar(
+            floating: true,
+            pinned: true,
+            expandedHeight: 100,
+            flexibleSpace: const FlexibleSpaceBar(
+              title: Text("Scrolling Lists & Effects"),
+              centerTitle: true,
             ),
-            elevation: 6,
-            child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Fill Your Details 👇",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.tealAccent,
-                      ),
-                    ),
-                    SizedBox(height: 20),
+          ),
 
-                    // Name Field
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: "Full Name",
-                        prefixIcon: Icon(Icons.person_outline, color: Colors.tealAccent),
+          // ListView style - Fruits list
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                    decoration: BoxDecoration(
+                      color: Colors.deepPurple[(index % 9 + 1) * 100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Text(
+                          fruits[index][0],
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepPurple,
+                          ),
+                        ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return "Please enter your name";
-                        }
-                        return null;
+                      title: Text(
+                        fruits[index],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                      ),
+                      trailing:
+                          const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                      onTap: () {
+                        setState(() {
+                          fruits.shuffle(); // effect
+                        });
                       },
-                      onSaved: (value) => userName = value!.trim(),
                     ),
-                    SizedBox(height: 15),
+                  ),
+                );
+              },
+              childCount: fruits.length,
+            ),
+          ),
 
-                    // Email Field
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: "Email Address",
-                        prefixIcon: Icon(Icons.email_outlined, color: Colors.tealAccent),
+          // GridView style - Vegetables grid
+          SliverPadding(
+            padding: const EdgeInsets.all(10),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: 1.3,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeInOut,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.deepPurple.shade400,
+                          Colors.deepPurple.shade700,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please enter your email";
-                        } else if (!value.contains("@")) {
-                          return "Please enter a valid email";
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => email = value!.trim(),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    SizedBox(height: 25),
-
-                    // Submit Button
-                    Center(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text("Welcome, $userName 👋  |  $email"),
-                                backgroundColor: Colors.tealAccent.shade700,
-                                behavior: SnackBarBehavior.floating,
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          }
-                        },
-                        icon: Icon(Icons.send, color: Colors.white),
-                        label: Text("Submit"),
+                    child: Center(
+                      child: Text(
+                        vegetables[index],
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  );
+                },
+                childCount: vegetables.length,
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
