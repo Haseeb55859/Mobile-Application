@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
         unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.movie), label: "Details"),
+          BottomNavigationBarItem(icon: Icon(Icons.travel_explore), label: "Details"),
         ],
       ),
     );
@@ -107,7 +107,7 @@ class HomeScreen extends StatelessWidget {
         ),
         SizedBox(height: 15),
         TextField(
-          style: TextStyle(color: Colors.white), // 👈 text color white when typing
+          style: TextStyle(color: Colors.white), 
           decoration: InputDecoration(
             hintText: 'Where to?',
             hintStyle: TextStyle(color: Colors.white70),

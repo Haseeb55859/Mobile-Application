@@ -64,7 +64,7 @@ class DetailsPage extends StatelessWidget {
         ElevatedButton(
           onPressed: () {},
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 91, 54, 97),
+            backgroundColor:  Color.fromARGB(255, 91, 54, 97),
             padding: EdgeInsets.symmetric(vertical: 15),
           ),
           child: Text(
